@@ -11,6 +11,8 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "openfaceinterface.h"
+
 
 using namespace cv;
 
@@ -34,6 +36,7 @@ private:
     Ui::MainWindow *ui;
     QTimer *camTimer;
     VideoCapture cap;
+    OpenFaceInterface* ofi;
 };
 
 #endif // MAINWINDOW_H

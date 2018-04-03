@@ -28,10 +28,12 @@ LIBS += -L/usr/local/lib -lopencv_stitching -lopencv_cudafeatures2d -lopencv_sup
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    openfaceinterface.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    openfaceinterface.h
 
 FORMS += \
         mainwindow.ui

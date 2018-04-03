@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ofi = new OpenFaceInterface();
+
     camTimer = new QTimer();
     connect(camTimer, SIGNAL(timeout()), this, SLOT(cam_timeout()));
 }
@@ -32,9 +34,11 @@ void MainWindow::cam_timeout()
 {
     Mat frame;
     cap >> frame;
-    cv::resize(frame,frame,Size(640,480),0,0,INTER_CUBIC);
-    cvtColor(frame, frame, COLOR_BGR2RGB);
+
+    Mat face = ofi->detectingLandmarks(frame);
+    cv::resize(face,face,Size(640,480),0,0,INTER_CUBIC);
+    cvtColor(face, face, COLOR_BGR2RGB);
     QImage imgIn;
-    imgIn= QImage((uchar*) frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+    imgIn= QImage((uchar*) face.data, face.cols, face.rows, face.step, QImage::Format_RGB888);
     ui->image_label->setPixmap(QPixmap::fromImage(imgIn));
 }
