@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     camTimer = new QTimer();
     connect(camTimer, SIGNAL(timeout()), this, SLOT(cam_timeout()));
+
+    QStringList output_items;
+    output_items<<"Input"<<"Output";
+    ui->output_comboBox->addItems(output_items);
 }
 
 MainWindow::~MainWindow()
@@ -26,6 +30,7 @@ void MainWindow::on_pushButton_clicked()
         qDebug()<<"cannot open";
         return;
     }
+    ui->output_comboBox->setEnabled(true);
     cap.open(0);
     camTimer->start(30);
 }
@@ -36,9 +41,16 @@ void MainWindow::cam_timeout()
     cap >> frame;
 
     Mat face = ofi->detectingLandmarks(frame);
-    cv::resize(face,face,Size(640,480),0,0,INTER_CUBIC);
-    cvtColor(face, face, COLOR_BGR2RGB);
+
+    Mat output;
+    if(ui->output_comboBox->currentText() == "Output")
+        face.copyTo(output);
+    else
+        frame.copyTo(output);
+
+    cv::resize(output,output,Size(640,480),0,0,INTER_CUBIC);
+    cvtColor(output, output, COLOR_BGR2RGB);
     QImage imgIn;
-    imgIn= QImage((uchar*) face.data, face.cols, face.rows, face.step, QImage::Format_RGB888);
+    imgIn= QImage((uchar*) output.data, output.cols, output.rows, output.step, QImage::Format_RGB888);
     ui->image_label->setPixmap(QPixmap::fromImage(imgIn));
 }
