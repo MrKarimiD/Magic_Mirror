@@ -41,11 +41,40 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
 
     if(success)
     {
-        for(unsigned long i=0;i<faces.size();i++){
+        for(unsigned long i=0;i<faces.size();i++)
+        {
+            voronoi_diagram(out, landmarks[i]);
             for(unsigned long k=0;k<landmarks[i].size();k++)
                 cv::circle(out,landmarks[i][k],5,cv::Scalar(0,0,255),FILLED);
         }
     }
 
+
     return out;
+}
+
+void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
+{
+    //consider some points
+    std::vector<Point_2> points;
+    for(int i=0;i<landmarks.size();i++)
+    {
+        points.push_back(Point_2(landmarks.at(i).x,landmarks.at(i).y));
+    }
+
+    Delaunay_triangulation_2 dt2;
+    //insert points into the triangulation
+    dt2.insert(points.begin(),points.end());
+    //construct a rectangle
+    Iso_rectangle_2 bbox(0, 0, input.cols, input.rows);
+    Cropped_voronoi_from_delaunay vor(bbox);
+    //extract the cropped Voronoi diagram
+    dt2.draw_dual(vor);
+
+    for(int i=0;i<vor.m_cropped_vd.size();i++)
+    {
+        Segment_2 tmp = vor.m_cropped_vd.at(i);
+        Point_2 start = tmp.vertex(0) , end = tmp.vertex(1);
+        line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 2);
+    }
 }
