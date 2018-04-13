@@ -44,15 +44,35 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
         for(unsigned long i=0;i<faces.size();i++)
         {
             voronoi_diagram(out, landmarks[i]);
-            for(unsigned long k=0;k<landmarks[i].size();k++)
-                cv::circle(out,landmarks[i][k],5,cv::Scalar(0,0,255),FILLED);
+            //for(unsigned long k=0;k<landmarks[i].size();k++)
+                //cv::circle(out,landmarks[i][k],2,cv::Scalar(0,0,255),FILLED);
         }
     }
 
+    rectangle(out, Point(0,0), Point(out.cols, out.rows), cv::Scalar(0,0,255), 5);
 
-    return out;
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    Mat gray2;
+    cvtColor( out, gray2, CV_RGB2GRAY );
+    findContours(gray2.clone(), contours, hierarchy, CV_RETR_TREE, CHAIN_APPROX_SIMPLE);
+
+    vector<Point> approx;
+    Mat dst = out.clone();
+    RNG rng(12345);
+    for (int i = 0; i < contours.size(); i++)
+    {
+        // Approximate contour with accuracy proportional
+        // to the contour perimeter
+       // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+
+        Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+        //drawContours(dst,contours, i, color, CV_FILLED, 4, hierarchy, 0);
+        drawContours(dst,contours, i, color, CV_FILLED, 8, hierarchy, 0);
+    }
+
+    return dst;
 }
-
 void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
 {
     //consider some points
@@ -65,6 +85,7 @@ void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
     Delaunay_triangulation_2 dt2;
     //insert points into the triangulation
     dt2.insert(points.begin(),points.end());
+
     //construct a rectangle
     Iso_rectangle_2 bbox(0, 0, input.cols, input.rows);
     Cropped_voronoi_from_delaunay vor(bbox);
@@ -75,6 +96,6 @@ void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
     {
         Segment_2 tmp = vor.m_cropped_vd.at(i);
         Point_2 start = tmp.vertex(0) , end = tmp.vertex(1);
-        line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 2);
+        line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 5);
     }
 }

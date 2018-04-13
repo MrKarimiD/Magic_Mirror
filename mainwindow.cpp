@@ -24,14 +24,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    bool isOpened = cap.open(0);
+    bool isOpened = cap.open(1);
     if( !isOpened )  // check if we succeeded
     {
         qDebug()<<"cannot open";
         return;
     }
     ui->output_comboBox->setEnabled(true);
-    cap.open(0);
+    cap.open(1);
     camTimer->start(30);
 }
 
