@@ -5,8 +5,19 @@ OpenFaceInterface::OpenFaceInterface(QObject *parent)
     faceDetector.load("haarcascade_frontalface_alt2.xml");
     facemark = FacemarkLBF::create();
 
+    srand (time(NULL));
+
+    this->range = 4;
+
     // Load landmark detector
     facemark->loadModel("lbfmodel.yaml");
+}
+
+bool compareContourAreas( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
+{
+    double i = fabs( contourArea(cv::Mat(contour1)) );
+    double j = fabs( contourArea(cv::Mat(contour2)) );
+    return ( i > j );
 }
 
 Mat OpenFaceInterface::detectingLandmarks(Mat input)
@@ -25,10 +36,6 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
 
     // Detect faces
     faceDetector.detectMultiScale(gray, faces);
-    for(int i = 0; i< faces.size(); i++)
-    {
-        qDebug()<<"face "<<i<<" : "<<faces.at(i).width << " , "<<faces.at(i).height;
-    }
 
     // Variable for landmarks.
     // Landmarks for one face is a vector of points
@@ -45,33 +52,36 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
         {
             voronoi_diagram(out, landmarks[i]);
             //for(unsigned long k=0;k<landmarks[i].size();k++)
-                //cv::circle(out,landmarks[i][k],2,cv::Scalar(0,0,255),FILLED);
+            //cv::circle(out,landmarks[i][k],2,cv::Scalar(0,0,255),FILLED);
         }
+
+        rectangle(out, Point(0,0), Point(out.cols, out.rows), cv::Scalar(0,0,255), 5);
+
+        vector<vector<Point> > contours;
+        vector<Vec4i> hierarchy;
+        Mat gray2;
+        cvtColor( out, gray2, CV_RGB2GRAY );
+        findContours(gray2.clone(), contours, hierarchy, CV_RETR_TREE, CHAIN_APPROX_SIMPLE);
+
+        qDebug()<<"Contours size: "<< contours.size();
+
+        // std::sort(contours.begin(), contours.end(), compareContourAreas);
+
+        //  vector<Point> approx;
+        Mat dst = out.clone();
+        for (int i = 0; i < contours.size(); i++)
+        {
+            // Approximate contour with accuracy proportional
+            // to the contour perimeter
+            // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+
+            drawContours(dst,contours, i, getTheColor(), CV_FILLED, 8, hierarchy, 0);
+        }
+
+        dst.copyTo(out);
     }
 
-    rectangle(out, Point(0,0), Point(out.cols, out.rows), cv::Scalar(0,0,255), 5);
-
-    vector<vector<Point> > contours;
-    vector<Vec4i> hierarchy;
-    Mat gray2;
-    cvtColor( out, gray2, CV_RGB2GRAY );
-    findContours(gray2.clone(), contours, hierarchy, CV_RETR_TREE, CHAIN_APPROX_SIMPLE);
-
-    vector<Point> approx;
-    Mat dst = out.clone();
-    RNG rng(12345);
-    for (int i = 0; i < contours.size(); i++)
-    {
-        // Approximate contour with accuracy proportional
-        // to the contour perimeter
-       // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
-
-        Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-        //drawContours(dst,contours, i, color, CV_FILLED, 4, hierarchy, 0);
-        drawContours(dst,contours, i, color, CV_FILLED, 8, hierarchy, 0);
-    }
-
-    return dst;
+    return out;
 }
 void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
 {
@@ -99,3 +109,43 @@ void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
         line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 5);
     }
 }
+
+void OpenFaceInterface::changeTheRange()
+{
+    this->range++;
+    if(this->range >= 6)
+        this->range = 0;
+}
+
+Scalar OpenFaceInterface::getTheColor()
+{
+    RNG rng(123456 * rand() % 10 + 123456);
+    Scalar color;
+
+    switch(this->range) {
+    case 0 :
+        //Red
+        color = Scalar( rng.uniform(200, 255), rng.uniform(0,60), rng.uniform(0,60) );
+        break;
+    case 1 :
+        //Magenta
+        color = Scalar( rng.uniform(200, 255), rng.uniform(0,100), rng.uniform(200,255) );
+        break;
+    case 2 :
+        //Green
+        color = Scalar( rng.uniform(0, 60), rng.uniform(200,255), rng.uniform(0,60) );
+        break;
+    case 3 :
+        //Orange
+        color = Scalar( rng.uniform(200, 255), rng.uniform(70,150), rng.uniform(0,70) );
+        break;
+    case 4 :
+        //Red
+        color = Scalar( rng.uniform(0, 60), rng.uniform(0,60), rng.uniform(200,255) );
+        break;
+    }
+
+    return color;
+}
+
+

@@ -1,6 +1,8 @@
 #ifndef OPENFACEINTERFACE_H
 #define OPENFACEINTERFACE_H
 
+#define MAXOFCONTOURS 2000
+
 #include <QObject>
 #include <QDebug>
 
@@ -17,6 +19,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <time.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 typedef K::Point_2 Point_2;
@@ -60,6 +63,8 @@ public:
     Mat detectingLandmarks(Mat input);
     //bool myDetector(InputArray image, OutputArray faces);
     void voronoi_diagram(Mat &input, vector<Point2f> landmarks);
+    void changeTheRange();
+    cv::Scalar getTheColor();
 
 signals:
 
@@ -68,7 +73,7 @@ public slots:
 private:
     CascadeClassifier faceDetector;
     Ptr<Facemark> facemark;
-
+    int range;
 };
 
 #endif // OPENFACEINTERFACE_H
