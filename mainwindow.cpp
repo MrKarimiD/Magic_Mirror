@@ -54,7 +54,10 @@ void MainWindow::color_timeout()
     ofi->changeTheRange();
 
     if( beatNum >= beats.size() )
+    {
+        colorTimer->stop();
         return;
+    }
 
     float startB = (float)beats.at(beatNum);
     float endB = (float)beats.at(beatNum+1);
@@ -97,10 +100,21 @@ void MainWindow::on_play_button_clicked()
 {
     ofi->changeTheRange();
 
+    player = new QMediaPlayer;
+    player->setMedia(QUrl::fromLocalFile(ui->musicAddr_lineEdit->text()));
+    player->setVolume(80);
+    player->play();
+
     beatNum = 0;
 
     float startB = (float)beats.at(beatNum);
     float endB = (float)beats.at(beatNum+1);
     colorTimer->start(endB - startB);
     beatNum++;
+}
+
+void MainWindow::on_stop_button_clicked()
+{
+    player->pause();
+    colorTimer->stop();
 }

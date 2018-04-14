@@ -7,7 +7,7 @@ OpenFaceInterface::OpenFaceInterface(QObject *parent)
 
     srand (time(NULL));
 
-    this->range = 4;
+    this->range = 0;
 
     // Load landmark detector
     facemark->loadModel("lbfmodel.yaml");
@@ -140,7 +140,7 @@ Scalar OpenFaceInterface::getTheColor()
         color = Scalar( rng.uniform(200, 255), rng.uniform(70,150), rng.uniform(0,70) );
         break;
     case 4 :
-        //Red
+        //Blue
         color = Scalar( rng.uniform(0, 60), rng.uniform(0,60), rng.uniform(200,255) );
         break;
     }

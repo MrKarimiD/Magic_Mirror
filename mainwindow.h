@@ -12,6 +12,8 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <qmediaplayer.h>
+
 #include "openfaceinterface.h"
 #include "musicanalysis.h"
 
@@ -43,6 +45,8 @@ private slots:
 
     void on_play_button_clicked();
 
+    void on_stop_button_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *camTimer;
@@ -51,6 +55,7 @@ private:
     OpenFaceInterface* ofi;
     vector<Real> beats;
     int beatNum;
+    QMediaPlayer *player;
 };
 
 #endif // MAINWINDOW_H
