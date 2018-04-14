@@ -113,7 +113,7 @@ void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
 void OpenFaceInterface::changeTheRange()
 {
     this->range++;
-    if(this->range >= 6)
+    if(this->range >= 5)
         this->range = 0;
 }
 
