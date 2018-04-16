@@ -72,6 +72,8 @@ vector<Real> MusicAnalysis::beatDetection(QString input, QString output)
         qDebug()<< a;
     }
 
+    qDebug()<<" confidence: "<<confidence;
+
     audioWriter->compute();
 
     delete audioLoader;

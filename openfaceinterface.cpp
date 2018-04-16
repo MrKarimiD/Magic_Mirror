@@ -20,7 +20,7 @@ bool compareContourAreas( std::vector<cv::Point> contour1, std::vector<cv::Point
     return ( i > j );
 }
 
-Mat OpenFaceInterface::detectingLandmarks(Mat input)
+Mat OpenFaceInterface::detectingLandmarks(Mat input, bool random)
 {
     // Variable to store a video frame and its grayscale
     Mat frame, gray;
@@ -55,7 +55,7 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
             //cv::circle(out,landmarks[i][k],2,cv::Scalar(0,0,255),FILLED);
         }
 
-        rectangle(out, Point(0,0), Point(out.cols, out.rows), cv::Scalar(0,0,255), 5);
+        rectangle(out, Point(0,0), Point(out.cols, out.rows), cv::Scalar(0,0,255), 2);
 
         vector<vector<Point> > contours;
         vector<Vec4i> hierarchy;
@@ -63,22 +63,35 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input)
         cvtColor( out, gray2, CV_RGB2GRAY );
         findContours(gray2.clone(), contours, hierarchy, CV_RETR_TREE, CHAIN_APPROX_SIMPLE);
 
-        qDebug()<<"Contours size: "<< contours.size();
+        //qDebug()<<"Contours size: "<< contours.size();
 
         // std::sort(contours.begin(), contours.end(), compareContourAreas);
 
-        //  vector<Point> approx;
-        Mat dst = out.clone();
-        for (int i = 0; i < contours.size(); i++)
+        if( random )
         {
-            // Approximate contour with accuracy proportional
-            // to the contour perimeter
-            // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
-
-            drawContours(dst,contours, i, getTheColor(), CV_FILLED, 8, hierarchy, 0);
+            Mat dst = out.clone();
+            RNG rng(12345);
+            for (int i = 0; i < contours.size(); i++)
+            {
+                Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+                drawContours(dst, contours, i, color, CV_FILLED, CV_AA, hierarchy, 0);
+            }
+            dst.copyTo(out);
         }
+        else
+        {
+            //  vector<Point> approx;
+            Mat dst = out.clone();
+            for (int i = 0; i < contours.size(); i++)
+            {
+                // Approximate contour with accuracy proportional
+                // to the contour perimeter
+                // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
 
-        dst.copyTo(out);
+                drawContours(dst, contours, i, getTheColor(), CV_FILLED, CV_AA, hierarchy, 0);
+            }
+            dst.copyTo(out);
+        }
     }
 
     return out;
@@ -106,7 +119,7 @@ void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)
     {
         Segment_2 tmp = vor.m_cropped_vd.at(i);
         Point_2 start = tmp.vertex(0) , end = tmp.vertex(1);
-        line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 5);
+        line(input, Point(start.x(), start.y()), Point(end.x(), end.y()), cv::Scalar(0,0,255), 1);
     }
 }
 
