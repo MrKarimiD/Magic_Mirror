@@ -102,14 +102,14 @@ void MainWindow::on_openCam_button_clicked()
 
 void MainWindow::on_MACProcess_button_clicked()
 {
-    ui->mac_progressBar->setEnabled(true);
+    qDebug()<<"Music Started";
     MusicAnalysis music_processor;
-//    if( ui->bits_rButton->isChecked() )
-        beats = music_processor.beatDetection(ui->musicAddr_lineEdit->text(), "output");
-//    else if( ui->pitch_rButton->isChecked() )
-//        music_processor.pitchDetection(ui->musicAddr_lineEdit->text(), "output");
+    //    if( ui->bits_rButton->isChecked() )
+    beats = music_processor.beatDetection(ui->musicAddr_lineEdit->text(), "output");
+    //    else if( ui->pitch_rButton->isChecked() )
+    //        music_processor.pitchDetection(ui->musicAddr_lineEdit->text(), "output");
 
-    qDebug()<<"Done";
+    qDebug()<<"Music Done";
 }
 
 void MainWindow::on_play_button_clicked()

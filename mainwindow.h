@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QFileDialog>
+#include <QProgressDialog>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
@@ -49,8 +50,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
     QTimer *camTimer;
     QTimer *colorTimer;
+
     VideoCapture cap;
     OpenFaceInterface* ofi;
     vector<Real> beats;

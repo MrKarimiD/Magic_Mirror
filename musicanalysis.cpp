@@ -66,11 +66,11 @@ vector<Real> MusicAnalysis::beatDetection(QString input, QString output)
 
     beatsMarker->compute();
 
-    for(int i =0 ; i< beats.size();i++)
-    {
-        float a = beats.at(i);
-        qDebug()<< a;
-    }
+//    for(int i =0 ; i< beats.size();i++)
+//    {
+//        float a = beats.at(i);
+//        qDebug()<< a;
+//    }
 
     qDebug()<<" confidence: "<<confidence;
 
