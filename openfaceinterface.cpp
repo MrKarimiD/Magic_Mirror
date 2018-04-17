@@ -88,8 +88,24 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input, bool random)
                 // to the contour perimeter
                 // approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
 
-                drawContours(dst, contours, i, getTheColor(), CV_FILLED, CV_AA, hierarchy, 0);
+                bool isInsideFaces = false;
+                for(int j = 0; j < faces.size(); j++)
+                {
+                    RotatedRect rr = minAreaRect(contours.at(i));
+                    if( faces.at(j).contains(rr.center) )
+                        isInsideFaces = true;
+                }
+
+                if(isInsideFaces)
+                {
+                    Rect br = boundingRect(contours.at(i));
+                    Scalar mean_color = mean( input(br) );
+                    drawContours(dst, contours, i, mean_color, CV_FILLED, CV_AA, hierarchy, 0);
+                }
+                else
+                    drawContours(dst, contours, i, getTheColor(), CV_FILLED, CV_AA, hierarchy, 0);
             }
+
             dst.copyTo(out);
         }
     }
