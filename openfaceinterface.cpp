@@ -20,7 +20,7 @@ bool compareContourAreas( std::vector<cv::Point> contour1, std::vector<cv::Point
     return ( i > j );
 }
 
-Mat OpenFaceInterface::detectingLandmarks(Mat input, bool random)
+Mat OpenFaceInterface::detectingLandmarks(Mat input, bool random, bool useNormalFace)
 {
     // Variable to store a video frame and its grayscale
     Mat frame, gray;
@@ -106,10 +106,32 @@ Mat OpenFaceInterface::detectingLandmarks(Mat input, bool random)
                     drawContours(dst, contours, i, getTheColor(), CV_FILLED, CV_AA, hierarchy, 0);
             }
 
+            if( useNormalFace )
+            {
+                for(int j = 0; j < faces.size(); j++)
+                {
+                    Point2f center;
+                    float radius;
+                    minEnclosingCircle( landmarks.at(j), center, radius);
+                    for(int x = faces.at(j).tl().x; x < faces.at(j).tl().x + faces.at(j).width; x++)
+                    {
+                        for(int y = faces.at(j).tl().y; y < faces.at(j).tl().y + faces.at(j).height; y++)
+                        {
+                            Point2f p(x,y);
+                            Point diff = p - center;
+                            if ( sqrt(diff.x*diff.x + diff.y*diff.y) < radius )
+                            {
+                                Vec3b color = input.at<Vec3b>(Point(x,y));
+                                dst.at<Vec3b>(Point(x,y)) = color;
+                            }
+                        }
+                    }
+                    //ROI.copyTo(dst(faces.at(j)));
+                }
+            }
             dst.copyTo(out);
         }
     }
-
     return out;
 }
 void OpenFaceInterface::voronoi_diagram(Mat &input, vector<Point2f> landmarks)

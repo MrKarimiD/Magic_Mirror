@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>1430</x>
-      <y>70</y>
+      <y>80</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -174,7 +174,7 @@
     <property name="geometry">
      <rect>
       <x>1310</x>
-      <y>250</y>
+      <y>220</y>
       <width>251</width>
       <height>20</height>
      </rect>
@@ -186,24 +186,8 @@
    <widget class="QPushButton" name="play_button">
     <property name="geometry">
      <rect>
-      <x>1340</x>
-      <y>270</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pause_button">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>1410</x>
-      <y>270</y>
+      <x>1370</x>
+      <y>240</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -215,8 +199,8 @@
    <widget class="QPushButton" name="stop_button">
     <property name="geometry">
      <rect>
-      <x>1480</x>
-      <y>270</y>
+      <x>1460</x>
+      <y>240</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -225,33 +209,43 @@
      <string/>
     </property>
    </widget>
-   <widget class="QProgressBar" name="mac_progressBar">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>1328</x>
-      <y>227</y>
-      <width>211</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>0</number>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="random_checkBox">
     <property name="geometry">
      <rect>
       <x>1320</x>
       <y>40</y>
+      <width>151</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Random Coloring</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="face_checkBox">
+    <property name="geometry">
+     <rect>
+      <x>1320</x>
+      <y>63</y>
       <width>92</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Random</string>
+     <string>Add Face</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_4">
+    <property name="geometry">
+     <rect>
+      <x>1310</x>
+      <y>282</y>
+      <width>251</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>

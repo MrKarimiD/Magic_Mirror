@@ -60,7 +60,7 @@ class OpenFaceInterface : public QObject
     Q_OBJECT
 public:
     explicit OpenFaceInterface(QObject *parent = nullptr);
-    Mat detectingLandmarks(Mat input, bool random = false);
+    Mat detectingLandmarks(Mat input, bool random, bool useNormalFace);
     //bool myDetector(InputArray image, OutputArray faces);
     void voronoi_diagram(Mat &input, vector<Point2f> landmarks);
     void changeTheRange();

@@ -17,11 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stop_button->setIcon(StopIcon);
     ui->stop_button->setIconSize(QSize(51,41));
 
-    QPixmap pause_pixmap("pause.png");
-    QIcon PauseIcon(pause_pixmap);
-    ui->pause_button->setIcon(PauseIcon);
-    ui->pause_button->setIconSize(QSize(51,41));
-
     beatNum = 0;
 
     ofi = new OpenFaceInterface();
@@ -46,8 +41,9 @@ void MainWindow::cam_timeout()
 {
     Mat frame;
     cap >> frame;
+    cvtColor(frame, frame, COLOR_BGR2RGB);
 
-    Mat face = ofi->detectingLandmarks(frame, ui->random_checkBox->isChecked());
+    Mat face = ofi->detectingLandmarks(frame, ui->random_checkBox->isChecked(), ui->face_checkBox->isChecked());
 
     Mat output;
     if(ui->output_comboBox->currentText() == "Output")
@@ -56,8 +52,9 @@ void MainWindow::cam_timeout()
         frame.copyTo(output);
 
     cv::resize(output,output,Size(1280,960),0,0,INTER_CUBIC);
-    if(ui->output_comboBox->currentText() == "Input")
-        cvtColor(output, output, COLOR_BGR2RGB);
+//    if(ui->output_comboBox->currentText() == "Input")
+//        cvtColor(output, output, COLOR_BGR2RGB);
+    flip(output, output, 1);
     QImage imgIn;
     imgIn= QImage((uchar*) output.data, output.cols, output.rows, output.step, QImage::Format_RGB888);
     ui->image_label->setPixmap(QPixmap::fromImage(imgIn));
